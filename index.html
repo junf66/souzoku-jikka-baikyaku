@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>相続した実家の売却目安診断｜売る・貸す・解体の判断材料を確認</title>
+  <meta name="description" content="相続した実家を売るべきか、貸すべきか、解体すべきか迷っている方向けの簡易診断。近隣取引から見た売却参考価格、解体費、貸す現実度、放置リスクを確認できます。" />
+  <meta name="robots" content="index,follow" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="相続した実家の売却目安診断｜売る・貸す・解体の判断材料を確認" />
+  <meta property="og:description" content="近隣取引をもとにした参考価格、古家リスク、解体費、貸す現実度をまとめて確認。査定前に判断材料を整理するための簡易ツール。" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="#top" aria-label="相続した実家の売却目安診断 トップへ">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="brand__text">相続実家 診断</span>
+      </a>
+      <nav class="site-nav" aria-label="主要メニュー">
+        <a href="#diagnose">診断する</a>
+        <a href="#about">このツールについて</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero__inner">
+        <p class="hero__eyebrow">相続した実家・空き家のための簡易診断</p>
+        <h1 class="hero__title">相続した実家の売却目安診断</h1>
+        <p class="hero__lead">
+          近隣取引をもとにした参考価格、古家リスク、解体費、貸す現実度をまとめて確認。査定前に判断材料を整理するための簡易ツール。
+        </p>
+        <ul class="hero__notes">
+          <li>査定額ではなく参考価格</li>
+          <li>売却を主軸に判定</li>
+          <li>貸す・解体は参考レンジ</li>
+        </ul>
+        <a class="hero__cta" href="#diagnose">診断をはじめる</a>
+      </div>
+    </section>
+
+    <section id="diagnose" class="diagnose">
+      <div class="container">
+        <div class="card form-card">
+          <h2 class="section-title">物件情報を入力</h2>
+          <p class="section-sub">入力内容に応じて、4つの観点（売却・貸す・解体・放置）の参考レンジを表示します。</p>
+
+          <form id="diagnose-form" class="form" novalidate>
+            <div class="form-row">
+              <label class="form-label" for="locationType">所在地タイプ</label>
+              <div class="radio-group" role="radiogroup" aria-labelledby="locationType-legend">
+                <label class="radio-pill"><input type="radio" name="locationType" value="urban" required /><span>都市部</span></label>
+                <label class="radio-pill"><input type="radio" name="locationType" value="suburban" /><span>郊外</span></label>
+                <label class="radio-pill"><input type="radio" name="locationType" value="rural" /><span>地方</span></label>
+              </div>
+              <p class="form-hint">政令市・主要駅徒歩圏は「都市部」、ベッドタウンは「郊外」、人口減少エリアは「地方」を目安に。</p>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-row">
+                <label class="form-label" for="landArea">土地面積（㎡）</label>
+                <input id="landArea" name="landArea" type="number" inputmode="decimal" min="10" max="3000" step="1" placeholder="例：120" required />
+              </div>
+              <div class="form-row">
+                <label class="form-label" for="floorArea">延床面積（㎡）</label>
+                <input id="floorArea" name="floorArea" type="number" inputmode="decimal" min="10" max="1000" step="1" placeholder="例：95" required />
+              </div>
+              <div class="form-row">
+                <label class="form-label" for="buildingAge">築年数（年）</label>
+                <input id="buildingAge" name="buildingAge" type="number" inputmode="numeric" min="0" max="120" step="1" placeholder="例：38" required />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label" for="condition">建物の状態</label>
+              <select id="condition" name="condition" required>
+                <option value="">選択してください</option>
+                <option value="livable">住める</option>
+                <option value="repair">修繕必要</option>
+                <option value="damaged">かなり傷んでいる</option>
+                <option value="unknown">不明</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label" for="road">接道・再建築</label>
+              <select id="road" name="road" required>
+                <option value="">選択してください</option>
+                <option value="ok">問題なさそう</option>
+                <option value="narrow">道路が狭い</option>
+                <option value="nonrebuild">再建築不可の可能性</option>
+                <option value="unknown">不明</option>
+              </select>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn--primary">この内容で診断する</button>
+              <button type="reset" class="btn btn--ghost">入力をクリア</button>
+            </div>
+            <p class="form-disclaimer">本診断は近隣取引・統計データの考え方に基づく概算であり、査定額ではありません。最終的な金額・可否は、不動産会社による現地査定や専門家への確認が必要です。</p>
+          </form>
+        </div>
+
+        <div id="result" class="result hidden" aria-live="polite">
+          <div class="card result-card">
+            <h2 class="section-title">診断結果（参考レンジ）</h2>
+            <p class="section-sub">入力内容から算出した参考値です。実際の取引価格・費用とは異なる可能性があります。</p>
+
+            <div class="result-grid">
+              <article class="result-item" data-key="sale">
+                <header class="result-item__head">
+                  <h3>売却目安</h3>
+                  <span class="badge badge--strong" title="近隣取引データの考え方に基づく">根拠 強</span>
+                </header>
+                <p class="result-item__value" id="r-sale-value">―</p>
+                <p class="result-item__sub" id="r-sale-sub">近隣取引から見た参考価格レンジ</p>
+              </article>
+
+              <article class="result-item" data-key="sellfit">
+                <header class="result-item__head">
+                  <h3>売却向き</h3>
+                  <span class="badge badge--strong">根拠 強</span>
+                </header>
+                <p class="result-item__value" id="r-sellfit-value">―</p>
+                <p class="result-item__sub" id="r-sellfit-sub">立地・築年・接道から判定</p>
+              </article>
+
+              <article class="result-item" data-key="rent">
+                <header class="result-item__head">
+                  <h3>貸す現実度</h3>
+                  <span class="badge badge--mid">根拠 中</span>
+                </header>
+                <p class="result-item__value" id="r-rent-value">―</p>
+                <p class="result-item__sub" id="r-rent-sub">需要・状態・接道から推定</p>
+                <div class="meter" aria-hidden="true"><span id="r-rent-bar" class="meter__bar"></span></div>
+              </article>
+
+              <article class="result-item" data-key="demolish">
+                <header class="result-item__head">
+                  <h3>解体費</h3>
+                  <span class="badge badge--ref">根拠 参考</span>
+                </header>
+                <p class="result-item__value" id="r-demolish-value">―</p>
+                <p class="result-item__sub" id="r-demolish-sub">木造住宅の概算（坪単価ベース）</p>
+              </article>
+
+              <article class="result-item result-item--full" data-key="leave">
+                <header class="result-item__head">
+                  <h3>放置リスク</h3>
+                  <span class="badge badge--mid">根拠 中</span>
+                </header>
+                <p class="result-item__value" id="r-leave-value">―</p>
+                <ul class="risk-list" id="r-leave-list"></ul>
+              </article>
+            </div>
+
+            <div class="tabs" role="tablist" aria-label="観点別の詳細">
+              <button class="tab is-active" role="tab" aria-selected="true" data-tab="sale">売却</button>
+              <button class="tab" role="tab" aria-selected="false" data-tab="rent">貸す</button>
+              <button class="tab" role="tab" aria-selected="false" data-tab="demolish">解体</button>
+              <button class="tab" role="tab" aria-selected="false" data-tab="leave">放置</button>
+            </div>
+            <div class="tab-panels">
+              <section class="tab-panel is-active" role="tabpanel" data-tab-panel="sale">
+                <h3>売却の判断材料</h3>
+                <ul id="reason-sale" class="reason-list"></ul>
+                <p class="muted">※ 近隣の取引価格・地価公示などの動向によって変動する可能性があります。実際の売出価格は不動産会社による査定で確認が必要です。</p>
+              </section>
+              <section class="tab-panel" role="tabpanel" data-tab-panel="rent">
+                <h3>貸すという選択の現実度</h3>
+                <ul id="reason-rent" class="reason-list"></ul>
+                <p class="muted">※ 戸建賃貸は需要・修繕費・管理体制で結果が大きく変わります。賃料断定はできず、賃貸管理会社への相談が必要です。</p>
+              </section>
+              <section class="tab-panel" role="tabpanel" data-tab-panel="demolish">
+                <h3>解体する場合の費用感</h3>
+                <ul id="reason-demolish" class="reason-list"></ul>
+                <p class="muted">※ 廃材量、進入路、アスベスト・浄化槽の有無で実際の見積りは増減します。複数業者の相見積りが必要です。</p>
+              </section>
+              <section class="tab-panel" role="tabpanel" data-tab-panel="leave">
+                <h3>放置した場合に発生しうること</h3>
+                <ul id="reason-leave" class="reason-list"></ul>
+                <p class="muted">※ 管理不全空家・特定空家に指定されると固定資産税の住宅用地特例が外れる可能性があります。自治体ごとの運用確認が必要です。</p>
+              </section>
+            </div>
+
+            <div class="cta-block">
+              <p class="cta-block__lead">参考レンジを踏まえ、実際の売却額や買取条件を確認したい方は、無料査定で具体的な金額を比較できます。</p>
+              <a href="#" class="btn btn--cta">無料査定／買取相談へ</a>
+              <p class="cta-block__note">複数社への相談で価格の妥当性を確認できます。査定は無料・現地確認の有無は依頼先により異なります。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="about">
+      <div class="container">
+        <div class="card about-card">
+          <h2 class="section-title">このツールについて</h2>
+          <p>
+            相続した実家・空き家を「売る・貸す・解体・放置」のどれが合っているかを整理するための簡易診断ツールです。所在地タイプや築年数などのざっくりした入力だけで、参考価格・解体費の概算、貸す現実度のスコア、放置リスクの注意点を一画面で確認できます。
+          </p>
+          <p>
+            算出には近隣取引・統計データの考え方を反映していますが、結果は<strong>査定額ではなく参考値</strong>です。最終的な金額・可否は、必ず不動産会社の査定や専門家への確認をおすすめします。
+          </p>
+          <ul class="data-source-list">
+            <li>近隣の取引価格・成約価格情報（国土交通省 不動産情報ライブラリ）</li>
+            <li>地価公示・都道府県地価調査</li>
+            <li>住宅・土地統計調査、市区町村別 空き家率</li>
+            <li>将来推計人口</li>
+          </ul>
+          <p class="muted">※ MVP版では仮の単価・係数で計算しています。今後、上記データに差し替えていく設計としています。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="site-footer__note">本サイトの数値は参考値であり、売却額・賃料・税金・費用を保証するものではありません。最終判断の前に、不動産会社・税理士・司法書士など専門家への確認をお願いします。</p>
+      <p class="site-footer__copy">© 相続実家 売却目安診断</p>
+    </div>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
