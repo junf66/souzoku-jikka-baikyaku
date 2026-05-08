@@ -78,10 +78,12 @@ a:hover { color: var(--primary); }
   letter-spacing: 0.02em;
 }
 .brand__mark {
-  width: 18px;
-  height: 18px;
-  border-radius: 4px;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  width: 22px;
+  height: 22px;
+  background-image: url("/favicon.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 .site-nav {
   display: flex;
