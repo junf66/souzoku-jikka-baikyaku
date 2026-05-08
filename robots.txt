@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jikka-uru.jp/sitemap.xml
