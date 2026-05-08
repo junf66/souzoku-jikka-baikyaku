@@ -229,7 +229,7 @@ ${trs}
 function renderPref(pref) {
   const region = regions[pref.region];
   const sameRegion = prefs.filter((p) => p.region === pref.region && p.code !== pref.code);
-  const cityList = cities.filter((c) => c.pref_code === pref.code);
+  const cityList = cities.filter((c) => c.pref_code === pref.code && c.feature !== false);
   const stats = txStats[`pref:${pref.code}`];
   const txFile = loadAreaRecords("pref", pref.code);
 
@@ -303,7 +303,7 @@ function renderPref(pref) {
 function renderCity(city) {
   const pref = prefs.find((p) => p.code === city.pref_code);
   const region = regions[pref.region];
-  const sameCities = cities.filter((c) => c.pref_code === city.pref_code && c.code !== city.code);
+  const sameCities = cities.filter((c) => c.pref_code === city.pref_code && c.code !== city.code && c.feature !== false);
   const stats = txStats[`city:${city.code}`];
   const txFile = loadAreaRecords("city", city.code);
 
@@ -376,6 +376,7 @@ for (const pref of prefs) {
   prefCount++;
 }
 for (const city of cities) {
+  if (city.feature === false || !city.slug) continue;
   writePage(`areas/city/${city.slug}/index.html`, renderCity(city));
   cityCount++;
 }
