@@ -36,7 +36,10 @@ const args = Object.fromEntries(
     return acc;
   }, [])
 );
-const YEAR = Number(args.year || new Date().getFullYear() - 1);
+const YEARS = String(args.years || args.year || (new Date().getFullYear() - 1))
+  .split(",")
+  .map((s) => Number(s.trim()))
+  .filter((y) => Number.isFinite(y));
 const QUARTERS = args.quarter && args.quarter !== "all"
   ? [Number(args.quarter)]
   : [1, 2, 3, 4];
@@ -134,8 +137,11 @@ function trimRecord(r) {
 /* ---------- run ---------- */
 
 (async () => {
-  const period = `${YEAR}年 Q${QUARTERS.join("・Q")}`;
+  const period = YEARS.length === 1
+    ? `${YEARS[0]}年 Q${QUARTERS.join("・Q")}`
+    : `${YEARS[0]}年〜${YEARS[YEARS.length - 1]}年`;
   console.log(`Period: ${period}`);
+  console.log(`Years: ${YEARS.join(", ")}  Quarters: ${QUARTERS.join(", ")}`);
   console.log(`Worker: ${WORKER}`);
   console.log(`Cities: ${cities.length} / Concurrency: ${CONCURRENCY}`);
 
@@ -151,8 +157,10 @@ function trimRecord(r) {
     const wardCodes = (c.wards || c.code).split(",");
     const tasks = [];
     for (const ward of wardCodes) {
-      for (const q of QUARTERS) {
-        tasks.push({ pref: c.pref_code, city: ward, year: YEAR, quarter: q });
+      for (const y of YEARS) {
+        for (const q of QUARTERS) {
+          tasks.push({ pref: c.pref_code, city: ward, year: y, quarter: q });
+        }
       }
     }
     console.log(`\n${c.name} (${c.code}) — ${tasks.length} requests`);

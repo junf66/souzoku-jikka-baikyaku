@@ -3,12 +3,12 @@ name: Update reinfolib data
 on:
   workflow_dispatch:
     inputs:
-      year:
-        description: 'Target year (e.g., 2024)'
+      years:
+        description: 'Years (comma-separated, e.g., 2024,2025,2026)'
         required: false
-        default: '2024'
+        default: '2024,2025,2026'
       quarter:
-        description: 'Target quarter (1, 2, 3, 4, or all)'
+        description: 'Quarter (1, 2, 3, 4, or all)'
         required: false
         default: 'all'
       concurrency:
@@ -40,7 +40,7 @@ jobs:
       - name: Fetch transaction data via Cloudflare Worker
         run: |
           node build/fetch-reinfolib.mjs \
-            --year "${{ inputs.year }}" \
+            --years "${{ inputs.years }}" \
             --quarter "${{ inputs.quarter }}" \
             --concurrency "${{ inputs.concurrency }}"
 
@@ -55,6 +55,6 @@ jobs:
           if git diff --staged --quiet; then
             echo 'No data changes; skipping commit.'
           else
-            git commit -m "chore(data): update reinfolib transactions (year=${{ inputs.year }} q=${{ inputs.quarter }})"
+            git commit -m "chore(data): update reinfolib transactions (years=${{ inputs.years }} q=${{ inputs.quarter }})"
             git push origin main
           fi
