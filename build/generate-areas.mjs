@@ -82,6 +82,7 @@ const head = ({ title, description, canonical, ogType = "article" }) => `<!DOCTY
   <link rel="apple-touch-icon" href="/favicon.svg" />
   <meta name="theme-color" content="#2d6a5c" />
   <link rel="stylesheet" href="/styles.css" />
+  <script src="/tx-table.js" defer></script>
 </head>
 <body>
   <header class="site-header">
@@ -155,6 +156,28 @@ function formatPriceCompact(v) {
   return `${Math.round(n / 1e4).toLocaleString()}万円`;
 }
 
+// "2024年第3四半期" → 20243（新しいほど大きい）
+function periodToNum(s) {
+  const m = String(s || "").match(/(\d+)年第([1-4])四半期/);
+  return m ? Number(m[1]) * 10 + Number(m[2]) : 0;
+}
+
+// "平成12年" "令和3年" "2018年" "昭和元年" → 西暦の数値
+function buildingYearToNum(s) {
+  if (!s) return 0;
+  const str = String(s);
+  const ce = str.match(/(\d{4})年/);
+  if (ce) return Number(ce[1]);
+  const eras = [["令和", 2018], ["平成", 1988], ["昭和", 1925], ["大正", 1911], ["明治", 1867]];
+  for (const [era, base] of eras) {
+    if (str.includes(era)) {
+      const m = str.match(new RegExp(era + "(\\d+|元)年"));
+      if (m) return base + (m[1] === "元" ? 1 : Number(m[1]));
+    }
+  }
+  return 0;
+}
+
 function txTable(file, downloadHref) {
   if (!file || !file.records || file.records.length === 0) return "";
   const rows = file.records.slice(0, TABLE_LIMIT);
@@ -162,18 +185,18 @@ function txTable(file, downloadHref) {
   const trs = rows.map((r) => {
     const place = [r.Municipality, r.DistrictName].filter(Boolean).join(" ");
     return `<tr>
-      <td>${esc(r.Period)}</td>
+      <td data-value="${periodToNum(r.Period)}">${esc(r.Period)}</td>
       <td>${esc(r.Type)}</td>
       <td>${esc(place)}</td>
-      <td class="num">${esc(formatPriceCompact(r.TradePrice))}</td>
-      <td class="num">${r.Area ? esc(r.Area) + "㎡" : "―"}</td>
-      <td>${esc(r.BuildingYear || "―")}</td>
+      <td class="num" data-value="${esc(r.TradePrice || 0)}">${esc(formatPriceCompact(r.TradePrice))}</td>
+      <td class="num" data-value="${esc(r.Area || 0)}">${r.Area ? esc(r.Area) + "㎡" : "―"}</td>
+      <td data-value="${buildingYearToNum(r.BuildingYear)}">${esc(r.BuildingYear || "―")}</td>
       <td>${esc(r.Structure || r.FloorPlan || "―")}</td>
     </tr>`;
   }).join("\n");
   const note = more > 0
-    ? `全 ${file.total.toLocaleString()} 件のうち、最新 ${rows.length.toLocaleString()} 件を表示しています。`
-    : `${file.total.toLocaleString()} 件すべて表示しています。`;
+    ? `全 ${file.total.toLocaleString()} 件のうち、最新 ${rows.length.toLocaleString()} 件を表示しています。表頭のクリックで並び替えできます。`
+    : `${file.total.toLocaleString()} 件すべて表示しています。表頭のクリックで並び替えできます。`;
   const dl = downloadHref
     ? `<p class="tx-download"><a href="${esc(downloadHref)}" download>全件JSONをダウンロード（${file.total.toLocaleString()}件）</a></p>`
     : "";
@@ -183,7 +206,13 @@ function txTable(file, downloadHref) {
   <div class="tx-table-wrap">
     <table class="tx-table">
       <thead><tr>
-        <th>取引時期</th><th>種類</th><th>所在</th><th>価格</th><th>面積</th><th>建築年</th><th>構造／間取り</th>
+        <th data-sortable data-default-dir="desc">取引時期</th>
+        <th>種類</th>
+        <th>所在</th>
+        <th class="num" data-sortable data-default-dir="desc">価格</th>
+        <th class="num" data-sortable data-default-dir="desc">面積</th>
+        <th data-sortable data-default-dir="desc">建築年</th>
+        <th>構造／間取り</th>
       </tr></thead>
       <tbody>
 ${trs}

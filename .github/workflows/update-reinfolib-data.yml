@@ -56,5 +56,6 @@ jobs:
             echo 'No data changes; skipping commit.'
           else
             git commit -m "chore(data): update reinfolib transactions (years=${{ inputs.years }} q=${{ inputs.quarter }})"
+            git pull --rebase --autostash origin main || true
             git push origin main
           fi
