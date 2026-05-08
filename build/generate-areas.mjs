@@ -241,8 +241,10 @@ function renderPref(pref) {
     ? `<section class="card stats-card">
   <h2>近隣取引から見た参考相場</h2>
   <p class="stats-meta">対象期間：${esc(stats.period)}／集計件数：${stats.count.toLocaleString()}件</p>
-  <p class="stats-value">${formatRange(stats.low, stats.high)}</p>
-  <p class="stats-sub">中央値：${formatYen(stats.median)}（参考）</p>
+  <div class="stats-grid">
+    <div class="stats-cell"><p class="stats-label">参考価格レンジ</p><p class="stats-figure">${formatRange(stats.low, stats.high)}</p></div>
+    <div class="stats-cell"><p class="stats-label">中央値（参考）</p><p class="stats-figure">${formatYen(stats.median)}</p></div>
+  </div>
   <p class="muted">数値は集計上の参考値であり、査定額・成約額を保証するものではありません。</p>
   ${apiCredit}
 </section>`
@@ -313,8 +315,10 @@ function renderCity(city) {
     ? `<section class="card stats-card">
   <h2>近隣取引から見た参考相場</h2>
   <p class="stats-meta">対象期間：${esc(stats.period)}／集計件数：${stats.count.toLocaleString()}件</p>
-  <p class="stats-value">${formatRange(stats.low, stats.high)}</p>
-  <p class="stats-sub">中央値：${formatYen(stats.median)}（参考）</p>
+  <div class="stats-grid">
+    <div class="stats-cell"><p class="stats-label">参考価格レンジ</p><p class="stats-figure">${formatRange(stats.low, stats.high)}</p></div>
+    <div class="stats-cell"><p class="stats-label">中央値（参考）</p><p class="stats-figure">${formatYen(stats.median)}</p></div>
+  </div>
   <p class="muted">数値は集計上の参考値であり、査定額・成約額を保証するものではありません。</p>
   ${apiCredit}
 </section>`
