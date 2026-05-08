@@ -1,0 +1,60 @@
+name: Update reinfolib data
+
+on:
+  workflow_dispatch:
+    inputs:
+      year:
+        description: 'Target year (e.g., 2024)'
+        required: false
+        default: '2024'
+      quarter:
+        description: 'Target quarter (1, 2, 3, 4, or all)'
+        required: false
+        default: 'all'
+      concurrency:
+        description: 'Worker concurrency (default 3)'
+        required: false
+        default: '3'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-reinfolib-data
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch transaction data via Cloudflare Worker
+        run: |
+          node build/fetch-reinfolib.mjs \
+            --year "${{ inputs.year }}" \
+            --quarter "${{ inputs.quarter }}" \
+            --concurrency "${{ inputs.concurrency }}"
+
+      - name: Regenerate area pages
+        run: node build/generate-areas.mjs
+
+      - name: Commit and push if changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/ areas/
+          if git diff --staged --quiet; then
+            echo 'No data changes; skipping commit.'
+          else
+            git commit -m "chore(data): update reinfolib transactions (year=${{ inputs.year }} q=${{ inputs.quarter }})"
+            git push origin main
+          fi
