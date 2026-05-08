@@ -29,6 +29,15 @@ try {
   txStats = JSON.parse(readFileSync(join(ROOT, "data/transactions-stats.json"), "utf-8"));
 } catch { /* phase 1: no data yet */ }
 
+const TABLE_LIMIT = 200; // ページに描画する直近件数
+function loadAreaRecords(prefix, code) {
+  try {
+    return JSON.parse(
+      readFileSync(join(ROOT, `data/transactions/${prefix}-${code}.json`), "utf-8")
+    );
+  } catch { return null; }
+}
+
 const SITE = "https://jikka-uru.jp";
 const TODAY = new Date().toISOString().slice(0, 10);
 
@@ -138,6 +147,54 @@ const dataPlaceholder = `<section class="card data-placeholder">
   <p class="muted">公開時には、国土交通省 不動産情報ライブラリの取引価格情報・地価公示／地価調査、住宅・土地統計調査による空き家率、将来推計人口の参考値を掲載予定です。</p>
 </section>`;
 
+// 価格を 万円 / 億円 表記に
+function formatPriceCompact(v) {
+  const n = Number(v);
+  if (!Number.isFinite(n) || n <= 0) return "―";
+  if (n >= 1e8) return `${(n / 1e8).toFixed(2)}億円`;
+  return `${Math.round(n / 1e4).toLocaleString()}万円`;
+}
+
+function txTable(file, downloadHref) {
+  if (!file || !file.records || file.records.length === 0) return "";
+  const rows = file.records.slice(0, TABLE_LIMIT);
+  const more = file.total - rows.length;
+  const trs = rows.map((r) => {
+    const place = [r.Municipality, r.DistrictName].filter(Boolean).join(" ");
+    return `<tr>
+      <td>${esc(r.Period)}</td>
+      <td>${esc(r.Type)}</td>
+      <td>${esc(place)}</td>
+      <td class="num">${esc(formatPriceCompact(r.TradePrice))}</td>
+      <td class="num">${r.Area ? esc(r.Area) + "㎡" : "―"}</td>
+      <td>${esc(r.BuildingYear || "―")}</td>
+      <td>${esc(r.Structure || r.FloorPlan || "―")}</td>
+    </tr>`;
+  }).join("\n");
+  const note = more > 0
+    ? `全 ${file.total.toLocaleString()} 件のうち、最新 ${rows.length.toLocaleString()} 件を表示しています。`
+    : `${file.total.toLocaleString()} 件すべて表示しています。`;
+  const dl = downloadHref
+    ? `<p class="tx-download"><a href="${esc(downloadHref)}" download>全件JSONをダウンロード（${file.total.toLocaleString()}件）</a></p>`
+    : "";
+  return `<section class="card tx-card">
+  <h2>取引事例（${esc(file.period)}）</h2>
+  <p class="muted">${esc(note)}</p>
+  <div class="tx-table-wrap">
+    <table class="tx-table">
+      <thead><tr>
+        <th>取引時期</th><th>種類</th><th>所在</th><th>価格</th><th>面積</th><th>建築年</th><th>構造／間取り</th>
+      </tr></thead>
+      <tbody>
+${trs}
+      </tbody>
+    </table>
+  </div>
+  ${dl}
+  ${apiCredit}
+</section>`;
+}
+
 /* ---------- prefecture page ---------- */
 
 function renderPref(pref) {
@@ -145,6 +202,7 @@ function renderPref(pref) {
   const sameRegion = prefs.filter((p) => p.region === pref.region && p.code !== pref.code);
   const cityList = cities.filter((c) => c.pref_code === pref.code);
   const stats = txStats[`pref:${pref.code}`];
+  const txFile = loadAreaRecords("pref", pref.code);
 
   const title = `${pref.name}の相続した実家・空き家 売却参考相場｜売却目安診断`;
   const description = `${pref.name}で相続した実家・空き家の売却を検討中の方向け。近隣取引から見た参考価格、解体費、貸す現実度、放置リスクを診断ツールで確認できます。`;
@@ -197,6 +255,8 @@ function renderPref(pref) {
 
         ${statsBlock}
 
+        ${txTable(txFile, `/data/transactions/pref-${pref.code}.json`)}
+
         ${ctaBlock}
 
         ${cityListBlock}
@@ -214,6 +274,7 @@ function renderCity(city) {
   const region = regions[pref.region];
   const sameCities = cities.filter((c) => c.pref_code === city.pref_code && c.code !== city.code);
   const stats = txStats[`city:${city.code}`];
+  const txFile = loadAreaRecords("city", city.code);
 
   const title = `${city.name}の相続した実家・空き家 売却参考相場｜売却目安診断`;
   const description = `${city.name}（${pref.name}）で相続した実家・空き家の売却を検討中の方向け。近隣取引から見た参考価格、解体費、貸す現実度、放置リスクを診断ツールで確認できます。`;
@@ -257,6 +318,8 @@ function renderCity(city) {
         </div>
 
         ${statsBlock}
+
+        ${txTable(txFile, `/data/transactions/city-${city.code}.json`)}
 
         ${ctaBlock}
 

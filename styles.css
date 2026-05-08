@@ -634,6 +634,51 @@ a:hover { color: var(--primary); }
 }
 .data-placeholder p { margin: 0 0 6px; }
 
+/* ---- transactions table ---- */
+.tx-table-wrap {
+  margin: 8px -22px 0;
+  padding: 0 22px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.tx-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 720px;
+}
+.tx-table thead th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-strong);
+  white-space: nowrap;
+  background: var(--surface-alt);
+  position: sticky;
+  top: 0;
+}
+.tx-table tbody td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  white-space: nowrap;
+}
+.tx-table tbody tr:hover { background: var(--surface-alt); }
+.tx-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.tx-download {
+  margin: 14px 0 0;
+  font-size: 13px;
+}
+.tx-download a {
+  color: var(--primary-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.tx-card .api-credit { margin-top: 14px; }
+
 /* ---- responsive ---- */
 @media (min-width: 640px) {
   .hero { padding: 56px 0 32px; }
